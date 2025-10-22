@@ -6,6 +6,7 @@ export enum Page {
   Simulator = 'simulator',
   Prioritizer = 'prioritizer',
   Contact = 'contact',
+  NoNominativo = 'nonominativo',
 }
 
 export enum Category {

@@ -5,9 +5,10 @@ import { Logo } from './constants';
 import ExplorerPage from './components/ExplorerPage';
 import ResultsPage from './components/ResultsPage';
 import SimulatorPage from './components/SimulatorPage';
+import NoNominativoPage from './components/NoNominativoPage';
 import { generateActionPlan } from './services/geminiService';
 
-const HomePage: React.FC<{ onStart: () => void }> = ({ onStart }) => (
+const HomePage: React.FC<{ onStart: () => void; onNoNominativo: () => void }> = ({ onStart, onNoNominativo }) => (
     <div className="min-h-screen flex flex-col items-center justify-center bg-base-200 text-center p-4">
         <div className="max-w-4xl">
             <div className="inline-block mb-8">
@@ -19,10 +20,21 @@ const HomePage: React.FC<{ onStart: () => void }> = ({ onStart }) => (
             <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-10">
                 Nuestra plataforma te ayuda a explorar tus flujos, identificar oportunidades y simular el impacto de tus decisiones para un crecimiento acelerado.
             </p>
-            <div className="flex justify-center mb-16">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
                 <button onClick={onStart} className="px-10 py-5 bg-primary text-white font-bold rounded-full text-xl hover:bg-blue-800 transition transform hover:scale-105 shadow-lg">
                     Comenzar Diagnóstico Gratuito
                 </button>
+                <button onClick={onNoNominativo} className="px-10 py-5 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold rounded-full text-xl hover:from-green-600 hover:to-teal-600 transition transform hover:scale-105 shadow-lg">
+                    Ver Servicio No Nominativo
+                </button>
+            </div>
+            <div className="mb-16 bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-400 rounded-2xl p-6 shadow-xl">
+                <p className="text-2xl font-bold text-gray-900 mb-2">
+                    ¡Ahorra hasta 80% en ISR! 💰
+                </p>
+                <p className="text-gray-700">
+                    Descubre cómo nuestro servicio No Nominativo puede transformar tu carga fiscal
+                </p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-left">
                 <div className="p-6 bg-white rounded-xl shadow-sm">
@@ -198,16 +210,17 @@ function App() {
     setPage(Page.Results);
   };
   
-  const handleNavigate = useCallback((newPage: 'simulator' | 'prioritizer' | 'contact') => {
+  const handleNavigate = useCallback((newPage: 'simulator' | 'prioritizer' | 'contact' | 'nonominativo') => {
     if (newPage === 'simulator') setPage(Page.Simulator);
     else if (newPage === 'prioritizer') setPage(Page.Prioritizer);
     else if (newPage === 'contact') setPage(Page.Contact);
+    else if (newPage === 'nonominativo') setPage(Page.NoNominativo);
   }, []);
 
   const renderPage = () => {
     switch (page) {
       case Page.Home:
-        return <HomePage onStart={() => setPage(Page.Explorer)} />;
+        return <HomePage onStart={() => setPage(Page.Explorer)} onNoNominativo={() => setPage(Page.NoNominativo)} />;
       case Page.Explorer:
         return <ExplorerPage onComplete={handleExplorerComplete} />;
       case Page.Results:
@@ -218,8 +231,10 @@ function App() {
         return <PrioritizerPage opportunities={opportunities} onNavigate={setPage} />;
       case Page.Contact:
         return <ContactPage />;
+      case Page.NoNominativo:
+        return <NoNominativoPage onNavigate={handleNavigate} />;
       default:
-        return <HomePage onStart={() => setPage(Page.Explorer)} />;
+        return <HomePage onStart={() => setPage(Page.Explorer)} onNoNominativo={() => setPage(Page.NoNominativo)} />;
     }
   };
 
@@ -234,6 +249,7 @@ function App() {
                 <button onClick={() => setPage(Page.Explorer)} className={`font-semibold ${page === Page.Explorer ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}>Diagnóstico</button>
                 <button onClick={() => setPage(Page.Results)} disabled={!Object.keys(answers).length} className={`font-semibold ${page === Page.Results ? 'text-primary' : 'text-gray-500 hover:text-primary'} disabled:text-gray-300 disabled:cursor-not-allowed`}>Resultados</button>
                 <button onClick={() => setPage(Page.Simulator)} disabled={!Object.keys(answers).length} className={`font-semibold ${page === Page.Simulator ? 'text-primary' : 'text-gray-500 hover:text-primary'} disabled:text-gray-300 disabled:cursor-not-allowed`}>Simulador</button>
+                <button onClick={() => setPage(Page.NoNominativo)} className={`font-semibold ${page === Page.NoNominativo ? 'text-primary' : 'text-gray-500 hover:text-primary'}`}>No Nominativo</button>
                 <button onClick={() => setPage(Page.Contact)} className="px-4 py-2 bg-secondary text-white font-semibold rounded-lg hover:bg-green-600 transition">Contactar</button>
               </div>
             </div>
